@@ -27,107 +27,107 @@ import java.io.Writer;
  * */
 public class CSVWriter{
 
-	// Constants ----------------------------------------------
+  // Constants ----------------------------------------------
 
-	/** Goes at the end of a CSV record. Maybe could be configurable. */
-	private static String NL=System.getProperty("line.separator");
+  /** Goes at the end of a CSV record. Maybe could be configurable. */
+  private static String NL=System.getProperty("line.separator");
 
-	/** Encloses a field. Maybe could be configurable. */
-	protected static char QUOTE='"';
+  /** Encloses a field. Maybe could be configurable. */
+  protected static char QUOTE='"';
 
-	// State ----------------------------------------------
+  // State ----------------------------------------------
 
-	/** Field separator. Configurable. */
-	private char separator=',';
+  /** Field separator. Configurable. */
+  private char separator=',';
 
-	/** The underlying writer where the CSV is written. */
-	private Writer writer;
+  /** The underlying writer where the CSV is written. */
+  private Writer writer;
 
-	/** Is the current line fresh?
-	 * true: current line is fresh, there are no fields on it yet.
-	 * false: current line already has some fields on it. */
-	private boolean fresh=true;
+  /** Is the current line fresh?
+   * true: current line is fresh, there are no fields on it yet.
+   * false: current line already has some fields on it. */
+  private boolean fresh=true;
 
-	// Constructors ----------------------------------------------
+  // Constructors ----------------------------------------------
 
-	/** Makes a new CSVWriter that writes to the given writer.
-	 * @param writer Where the data will go. */
-	public CSVWriter(Writer writer){
-		this.writer=writer;
-	}
+  /** Makes a new CSVWriter that writes to the given writer.
+   * @param writer Where the data will go. */
+  public CSVWriter(Writer writer){
+    this.writer=writer;
+  }
 
-	// Configuration methods ------------------------------------------
+  // Configuration methods ------------------------------------------
 
-	/** Sets the field separator. Normally it's ',' or ';'. */
-	public void setSeparator(char separator){
-		this.separator=separator;
-	}
+  /** Sets the field separator. Normally it's ',' or ';'. */
+  public void setSeparator(char separator){
+    this.separator=separator;
+  }
 
-	// Business methods ------------------------------------------
+  // Business methods ------------------------------------------
 
-	/** Writes some objects to CSV, each object as one more field in the current record.
-	 * The fields are always enclosed in the delimiters double quotes.
-	 * The fields are escaped properly according to RFC4180.
-	 * At the end, flushes the underlying writer.
-	 * @param fields
-	 * 	Meant for primitives and String.
-	 * 	Other objects are converted to String by toString(),
-	 * 	and null is represented "null".
-	 * @exception IOException Writing has failed. */
-	public void write(Object... fields) throws IOException {
-		for(Object field : fields){
-			if(!fresh)this.writer.write(separator);//the line already has fields on it
-			String s = field==null ? "null" : field.toString();//null->"null", and toString() for others. Here you could put a configurable substitution for null.
-			this.writer.write(QUOTE);//opening quote always
-			int N=s.length();
-			for(int i=0; i<N; i++){
-				char c=s.charAt(i);
-				if(c==QUOTE)this.writer.write(QUOTE);//escape
-				this.writer.write(c);
-			}
-			this.writer.write(QUOTE);//closing quote always
-			this.fresh=false;//Now the line definitely is not fresh anymore.
-		}
-		//this.writer.flush();
-	}
+  /** Writes some objects to CSV, each object as one more field in the current record.
+   * The fields are always enclosed in the delimiters double quotes.
+   * The fields are escaped properly according to RFC4180.
+   * At the end, flushes the underlying writer.
+   * @param fields
+   *  Meant for primitives and String.
+   *  Other objects are converted to String by toString(),
+   *  and null is represented "null".
+   * @exception IOException Writing has failed. */
+  public void write(Object... fields) throws IOException {
+    for(Object field : fields){
+      if(!fresh)this.writer.write(separator);//the line already has fields on it
+      String s = field==null ? "null" : field.toString();//null->"null", and toString() for others. Here you could put a configurable substitution for null.
+      this.writer.write(QUOTE);//opening quote always
+      int N=s.length();
+      for(int i=0; i<N; i++){
+        char c=s.charAt(i);
+        if(c==QUOTE)this.writer.write(QUOTE);//escape
+        this.writer.write(c);
+      }
+      this.writer.write(QUOTE);//closing quote always
+      this.fresh=false;//Now the line definitely is not fresh anymore.
+    }
+    //this.writer.flush();
+  }
 
-	/** Writes some objects to CSV, each object as one more field in the
-	 * current record, and then writes a line ending to terminate the record,
-	 * and flushes the underlying writer.
-	 * The fields are escaped properly according to RFC4180.
-	 * @param fields Meant for primitives and String. Other objects are converted to
-	 * 	String by toString(), and null is represented by "null".
-	 * @exception IOException Writing has failed. */
-	public void writeln(Object... fields) throws IOException {
-		this.write(fields);
-		this.endRecord();
-	}
+  /** Writes some objects to CSV, each object as one more field in the
+   * current record, and then writes a line ending to terminate the record,
+   * and flushes the underlying writer.
+   * The fields are escaped properly according to RFC4180.
+   * @param fields Meant for primitives and String. Other objects are converted to
+   *  String by toString(), and null is represented by "null".
+   * @exception IOException Writing has failed. */
+  public void writeln(Object... fields) throws IOException {
+    this.write(fields);
+    this.endRecord();
+  }
 
-	protected void endRecord()throws IOException{
-		this.writer.write(NL);
-		this.writer.flush();
-		this.fresh=true;//fresh line
-	}
+  protected void endRecord()throws IOException{
+    this.writer.write(NL);
+    this.writer.flush();
+    this.fresh=true;//fresh line
+  }
 
-	/** Flushes and closes underlying writer. */
-	public void close()throws IOException{writer.close();}
+  /** Flushes and closes underlying writer. */
+  public void close()throws IOException{writer.close();}
 
-	// Helpers ---------------------------------------------------------------
+  // Helpers ---------------------------------------------------------------
 
-	/** only testing */
-	public static void main(String[] args) throws Exception {
-		say("hi");
-		Writer writer=new FileWriter("out.csv");
-		CSVWriter cw=new CSVWriter(writer);
-		cw.write();
-		cw.write(true, 12, -3.19, "Hola guapo", "She said: \"Hola guapo\".");
-		cw.writeln();
-		cw.writeln(false, 13, -3.21, "Hola guapa", "He said: \"Hola guapa\".");
-		writer.close();
-		say("bye");
-	}
+  /** only testing */
+  public static void main(String[] args) throws Exception {
+    say("hi");
+    Writer writer=new FileWriter("out.csv");
+    CSVWriter cw=new CSVWriter(writer);
+    cw.write();
+    cw.write(true, 12, -3.19, "Hola guapo", "She said: \"Hola guapo\".");
+    cw.writeln();
+    cw.writeln(false, 13, -3.21, "Hola guapa", "He said: \"Hola guapa\".");
+    writer.close();
+    say("bye");
+  }
 
-	/** only testing */
-	private static void say(Object o){System.out.println(o);}
+  /** only testing */
+  private static void say(Object o){System.out.println(o);}
 
 }

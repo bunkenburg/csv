@@ -18,6 +18,7 @@
 package inspiracio.io;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileReader;
@@ -38,6 +39,18 @@ public class CSVReaderTest{
 		assertEquals(Double.class, line[2].getClass());
 		assertEquals(String.class, line[3].getClass());
 		assertEquals(Boolean.class, line[4].getClass());
+	}
+	
+	@Test public void read_6030() throws IOException {
+		String filePath=getDirectoryPath(this.getClass()) + File.separator + "6030.csv";
+		CSVReader reader=new CSVReader(new FileReader(filePath));
+
+		Object[] line=reader.readln();
+		assertTrue("read the string 'a'", line[0] == "a");
+		assertTrue("read the long '1'", line[1] == "1");
+		assertTrue("read the double '1.5'", line[2] == "1.5");
+		assertTrue("read the string 2010-10-15T18:15:00Z", line[3] == "2010-10-15T18:15:00Z");
+		assertTrue("read the boolean false", line[4] == "false");
 	}
 	
 	/** Returns the file system directory path where the passed class is located. */
