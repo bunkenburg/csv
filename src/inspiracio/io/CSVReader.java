@@ -310,20 +310,6 @@ public class CSVReader{
 
   //Helpers -------------------------------------------
   
-  public static void main(String[] args) throws Exception {
-	String file = "out.csv";
-    Reader reader=new FileReader(file);
-    CSVReader cw=new CSVReader(reader);
-    for (int i = 0; i < count(file); i++) {
-      System.out.println(Arrays.toString(cw.readln()));
-    }
-    reader.close();
-  }
-
-  private static int count(String string) throws IOException {
-    return Utils.count(string);
-  }
-
   /** Signals End-of-record. */
   private static class EOR extends Exception{}
 }

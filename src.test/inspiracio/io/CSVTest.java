@@ -22,18 +22,30 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.junit.Test;
 
-public class CSVReaderTest{
+public class CSVTest{
 	
-	@Test public void trac_6030() throws IOException {
-		String filePath=getDirectoryPath(this.getClass()) + File.separator + "6030.csv";
-		CSVReader reader=new CSVReader(new FileReader(filePath));
+	@Test public void testWriter() throws IOException {
+		String filePath = getDirectoryPath(this.getClass()) + File.separator + "test.csv";
+		FileWriter writer = new FileWriter(filePath);
+		CSVWriter cw= new CSVWriter(writer);
+	    cw.writeln('a', 1, -1.5, "2010-10-15T18:15:00Z", false);
+	    cw.write('b', 2, 0.33333333333333333333333333333333,"2012-07-17T12:42:00Z",true);
+	    writer.close();
+	}	
+	
+	@Test public void testClass() throws IOException {
+		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
+		CSVReader cr=new CSVReader(new FileReader(filePath));
 
-		Object[] line=reader.readln();
+		Object[] line=cr.readln();
 		assertEquals(String.class, line[0].getClass());
 		assertEquals(Long.class, line[1].getClass());
 		assertEquals(Double.class, line[2].getClass());
@@ -41,16 +53,32 @@ public class CSVReaderTest{
 		assertEquals(Boolean.class, line[4].getClass());
 	}
 	
-	@Test public void read_6030() throws IOException {
-		String filePath=getDirectoryPath(this.getClass()) + File.separator + "6030.csv";
-		CSVReader reader=new CSVReader(new FileReader(filePath));
+	@Test public void testRead() throws IOException {
+		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
+		CSVReader cr=new CSVReader(new FileReader(filePath));
 
-		Object[] line=reader.readln();
+		Object[] line=cr.readln();
 		assertEquals(line[0], "a");
 		assertEquals(line[1], (long) 1);
-		assertEquals(line[2], 1.5);
+		assertEquals(line[2], -1.5);
 		assertEquals(line[3], "2010-10-15T18:15:00Z");
 		assertEquals(line[4], false);
+	}
+	
+	@Test public void fullRead() throws IOException {
+		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
+	    Reader reader=new FileReader(filePath);
+	    CSVReader cr=new CSVReader(reader);
+
+		assertEquals(Arrays.toString(cr.readln()), "[a, 1, -1.5, 2010-10-15T18:15:00Z, false]");
+		assertEquals(Arrays.toString(cr.readln()), "[b, 2, 0.3333333333333333, 2012-07-17T12:42:00Z, true]");
+		reader.close();
+	}
+	
+	@Test public void testCount() throws IOException {
+		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
+
+		assertEquals(Utils.count(filePath), 2); //No CRLF
 	}
 	
 	/** Returns the file system directory path where the passed class is located. */
