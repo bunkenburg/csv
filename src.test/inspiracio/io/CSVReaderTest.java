@@ -46,11 +46,11 @@ public class CSVReaderTest{
 		CSVReader reader=new CSVReader(new FileReader(filePath));
 
 		Object[] line=reader.readln();
-		assertTrue("read the string 'a'", line[0] == "a");
-		assertTrue("read the long '1'", line[1] == "1");
-		assertTrue("read the double '1.5'", line[2] == "1.5");
-		assertTrue("read the string 2010-10-15T18:15:00Z", line[3] == "2010-10-15T18:15:00Z");
-		assertTrue("read the boolean false", line[4] == "false");
+		assertEquals(line[0], "a");
+		assertEquals(line[1], (long) 1);
+		assertEquals(line[2], 1.5);
+		assertEquals(line[3], "2010-10-15T18:15:00Z");
+		assertEquals(line[4], false);
 	}
 	
 	/** Returns the file system directory path where the passed class is located. */
