@@ -17,18 +17,13 @@
  */
 package inspiracio.io;
 
-import java.io.FileWriter;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
-import java.io.Writer;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
-import inspiracio.io.Utils;
 
 /** Reads CSV records from a java.io.Reader, one at a time.
  * Can be used to read the records and process them without having to read
@@ -188,7 +183,6 @@ public class CSVReader{
       return FIELD_SEPARATOR;
     }else{
       if(0<=i)this.reader.unread(i);
-      //else System.out.println("here");
       return null;
     }
   }
@@ -272,14 +266,14 @@ public class CSVReader{
   }
 
   /** Parses a field:
-   * <ul>
-   *  <li>CSV field:                              parsed</li>
-   *  <li>"":                                 String ""</li>
-   *  <li>integers and floating point numbers, according to default locale: Number</li>
-   *  <li>"true", "TRUE", "false", "FALSE":                 Boolean</li>
-   *  <li>"null":                               null</li>
-   *  <li>... otherwise:                            String</li>
-   * </ul>
+   * <table border="1">
+   *  <tr><th>CSV field:<th>parsed</tr>
+   *  <tr><td>""<td>String ""</tr>
+   *  <tr><td>integers and floating point numbers, according to default locale<td>Number</tr>
+   *  <tr><td>"true", "TRUE", "false", "FALSE"<td>Boolean</tr>
+   *  <tr><td>"null"<td>null</tr>
+   *  <tr><td>... otherwise<td>String</tr>
+   * </table>
    * The string must be not-null, and the characters in it already unescaped.
    *  */
   private Object parseField(String field){

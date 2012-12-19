@@ -17,15 +17,12 @@
  */
 package inspiracio.io;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-/**
- * Writes data in CSV format to somewhere. Spec
- * http://tools.ietf.org/html/rfc4180. This class does not control that each
- * record has the same number of fields.
- * */
+/** Writes data in CSV format to somewhere.
+ * Spec http://tools.ietf.org/html/rfc4180. 
+ * This class does not control that each record has the same number of fields. */
 public class CSVWriter {
 
 	// Constants ----------------------------------------------
@@ -44,61 +41,40 @@ public class CSVWriter {
 	/** The underlying writer where the CSV is written. */
 	private Writer writer;
 
-	/**
-	 * Is the current line fresh? true: current line is fresh, there are no
-	 * fields on it yet. false: current line already has some fields on it.
-	 */
+	/** Is the current line fresh? true: current line is fresh, there are no
+	 * fields on it yet. false: current line already has some fields on it. */
 	private boolean fresh = true;
 
 	// Constructors ----------------------------------------------
 
-	/**
-	 * Makes a new CSVWriter that writes to the given writer.
-	 * 
-	 * @param writer
-	 *            Where the data will go.
-	 */
-	public CSVWriter(Writer writer) {
-		this.writer = writer;
-	}
+	/** Makes a new CSVWriter that writes to the given writer.
+	 * @param writer Where the data will go. */
+	public CSVWriter(Writer writer){this.writer = writer;}
 
 	// Configuration methods ------------------------------------------
 
 	/** Sets the field separator. Normally it's ',' or ';'. */
-	public void setSeparator(char separator) {
-		this.separator = separator;
-	}
+	public void setSeparator(char separator){this.separator = separator;}
 
 	// Business methods ------------------------------------------
 
-	/**
-	 * Writes some objects to CSV, each object as one more field in the current
+	/** Writes some objects to CSV, each object as one more field in the current
 	 * record. The fields are always enclosed in the delimiters double quotes.
 	 * The fields are escaped properly according to RFC4180. At the end, flushes
 	 * the underlying writer.
-	 * 
 	 * @param fields
 	 *            Meant for primitives and String. Other objects are converted
 	 *            to String by toString(), and null is represented "null".
-	 * @exception IOException
-	 *                Writing has failed.
+	 * @exception IOException Writing has failed.
 	 */
 	public void write(Object... fields) throws IOException {
 		for (Object field : fields) {
 			if (!fresh)
-				this.writer.write(separator);// the line already has fields on
-												// it
-			String s = field == null ? "null" : field.toString();// null->"null",
-																	// and
-																	// toString()
-																	// for
-																	// others.
-																	// Here you
-																	// could put
-																	// a
-																	// configurable
-																	// substitution
-																	// for null.
+				this.writer.write(separator);// the line already has fields on it
+			
+			// null->"null", and toString() for others.
+			//Here you could put a configurable substitution for null.
+			String s = field==null ? "null" : field.toString();
 			this.writer.write(QUOTE);// opening quote always
 			int N = s.length();
 			for (int i = 0; i < N; i++) {
@@ -113,8 +89,7 @@ public class CSVWriter {
 		// this.writer.flush();
 	}
 
-	/**
-	 * Writes some objects to CSV, each object as one more field in the current
+	/** Writes some objects to CSV, each object as one more field in the current
 	 * record, and then writes a line ending to terminate the record, and
 	 * flushes the underlying writer. The fields are escaped properly according
 	 * to RFC4180.
