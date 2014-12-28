@@ -1,4 +1,4 @@
-/*  Copyright 2011 Alexander Bunkenburg alex@inspiracio.com
+/*  Copyright 2011 Alexander Bunkenburg alex@inspiracio.cat
 
     This file is part of csv.
 
@@ -15,29 +15,24 @@
     You should have received a copy of the GNU General Public License
     along with csv.  If not, see <http://www.gnu.org/licenses/>.
  */
-package inspiracio.io;
+package cat.inspiracio.io;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URL;
 import java.util.Arrays;
 
 import org.junit.Test;
 
-public class CSVTest{
-	
-	@Test public void testWriter() throws IOException {
-		String filePath = getDirectoryPath(this.getClass()) + File.separator + "test.csv";
-		FileWriter writer = new FileWriter(filePath);
-		CSVWriter cw= new CSVWriter(writer);
-	    cw.writeln('a', 1, -1.5, "2010-10-15T18:15:00Z", false);
-	    cw.write('b', 2, 0.33333333333333333333333333333333,"2012-07-17T12:42:00Z",true);
-	    writer.close();
-	}	
+public class CSVReaderTest extends CSVTest {
+
+	//getCount() How many records have been read?
+	//readln(): Object[]
+	//setDelimiter() " '
+	//setSeparator() , ; : TAB SPACE
 	
 	@Test public void testClass() throws IOException {
 		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
@@ -75,17 +70,7 @@ public class CSVTest{
 	
 	@Test public void testCount() throws IOException {
 		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
-
 		assertEquals(Utils.count(filePath), 2); //No CRLF
 	}
 	
-	/** Returns the file system directory path where the passed class is located. */
-	public static String getDirectoryPath(Class<?> c){
-		URL url=c.getResource(c.getName().replace(c.getPackage().getName() + ".", "") + ".class");
-		String path=url.getFile();
-		path=path.substring(0, path.lastIndexOf("/"));
-		File f = new File(path);
-		return f.getAbsolutePath();
-	}
-
 }

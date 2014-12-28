@@ -1,4 +1,4 @@
-/*  Copyright 2011 Alexander Bunkenburg alex@inspiracio.com
+/*  Copyright 2011 Alexander Bunkenburg alex@inspiracio.cat
 
     This file is part of csv.
 
@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with csv.  If not, see <http://www.gnu.org/licenses/>.
  */
-package inspiracio.io;
+package cat.inspiracio.io;
 
 import java.io.IOException;
 import java.io.Writer;

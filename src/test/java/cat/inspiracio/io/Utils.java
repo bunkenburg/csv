@@ -5,7 +5,7 @@
  * versus 2.40 seconds when using readLines(). Just for fun,
  * linux' wc -l command takes 0.15 seconds.
  * */
-package inspiracio.io;
+package cat.inspiracio.io;
 
 import java.io.IOException;
 import java.io.FileInputStream;

@@ -1,4 +1,4 @@
-/*  Copyright 2011 Alexander Bunkenburg alex@inspiracio.com
+/*  Copyright 2011 Alexander Bunkenburg alex@inspiracio.cat
 
     This file is part of csv.
 
@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with csv.  If not, see <http://www.gnu.org/licenses/>.
  */
-package inspiracio.io;
+package cat.inspiracio.io;
 
 import java.io.IOException;
 import java.io.PushbackReader;
@@ -78,15 +78,19 @@ public class CSVReader{
 
   //Accessors -------------------------------------------
 
-  /** Accepts '"' and '\''. */
-  public void setFieldDelimiter(char delimiter){
-    if(delimiter!='"' && delimiter!='\'')throw new IllegalArgumentException();
+  /** Sets the field delimiter.
+   * Accepts '"' and '\''. */
+  public void setDelimiter(char delimiter){
+    if(delimiter!='"' && delimiter!='\'')
+    	throw new IllegalArgumentException();
     this.FIELD_DELIMITER=delimiter;
   }
 
-  /** Accepts ',' and ';' and ':' and TAB and SPACE. */
-  public void setFieldSeparator(char separator){
-    if(separator!=',' && separator!=';' && separator!=':' && separator!='\t' && separator!=' ')throw new IllegalArgumentException();
+  /** Sets the field separator.
+   * Accepts ',' and ';' and ':' and TAB and SPACE. */
+  public void setSeparator(char separator){
+    if(separator!=',' && separator!=';' && separator!=':' && separator!='\t' && separator!=' ')
+    	throw new IllegalArgumentException();
     this.FIELD_SEPARATOR=separator;
   }
 
@@ -150,7 +154,7 @@ public class CSVReader{
   private Object readField()throws IOException, EOR{
     int i=this.reader.read();
 
-    //End of input? Return "" at least"!
+    //End of input? Return "" at least".
     if(i<0)return "";
 
     //Is the field delimited?
