@@ -25,43 +25,49 @@ import java.io.Writer;
  * This class does not control that each record has the same number of fields. */
 public class CSVWriter {
 
-	// Constants ----------------------------------------------
-
-	/** Goes at the end of a CSV record. Maybe could be configurable. */
-	private static String NL = System.getProperty("line.separator");
-
-	/** Encloses a field. Maybe could be configurable. */
-	protected static char QUOTE = '"';
-
 	// State ----------------------------------------------
 
-	/** Field separator. Configurable. */
-	private char separator = ',';
+	/** Encloses a field. */
+	private char delimiter='"';
+
+	/** Field separator. */
+	private char separator=',';
+
+	/** Goes at the end of a CSV record. */
+	private String terminator=System.getProperty("line.separator");
 
 	/** The underlying writer where the CSV is written. */
 	private Writer writer;
 
 	/** Is the current line fresh? true: current line is fresh, there are no
 	 * fields on it yet. false: current line already has some fields on it. */
-	private boolean fresh = true;
+	private boolean fresh=true;
 
 	// Constructors ----------------------------------------------
 
 	/** Makes a new CSVWriter that writes to the given writer.
-	 * @param writer Where the data will go. */
-	public CSVWriter(Writer writer){this.writer = writer;}
+	 * @param w Where the data will go. */
+	public CSVWriter(Writer w){writer=w;}
 
 	// Configuration methods ------------------------------------------
 
 	/** Sets the field separator. Normally it's ',' or ';'. */
-	public void setSeparator(char separator){this.separator = separator;}
+	public void setSeparator(char s){separator=s;}
 
+	/** Sets the delimiter of a field. Accepts single or double quote. */
+	public void setDelimiter(char c){
+		if(c!='\'' && c!='"')
+			throw new IllegalArgumentException(c+"");
+		delimiter=c;
+	}
+	
 	// Business methods ------------------------------------------
 
 	/** Writes some objects to CSV, each object as one more field in the current
 	 * record. The fields are always enclosed in the delimiters double quotes.
 	 * The fields are escaped properly according to RFC4180. At the end, flushes
 	 * the underlying writer.
+	 * 
 	 * @param fields
 	 *            Meant for primitives and String. Other objects are converted
 	 *            to String by toString(), and null is represented "null".
@@ -70,23 +76,23 @@ public class CSVWriter {
 	public void write(Object... fields) throws IOException {
 		for (Object field : fields) {
 			if (!fresh)
-				this.writer.write(separator);// the line already has fields on it
+				separator();// the line already has fields on it
 			
-			// null->"null", and toString() for others.
-			//Here you could put a configurable substitution for null.
-			String s = field==null ? "null" : field.toString();
-			this.writer.write(QUOTE);// opening quote always
+			String s = toString(field);
+			
+			delimiter();// opening quote always
+			
 			int N = s.length();
 			for (int i = 0; i < N; i++) {
 				char c = s.charAt(i);
-				if (c == QUOTE)
-					this.writer.write(QUOTE);// escape
-				this.writer.write(c);
+				if (c == delimiter)
+					delimiter();// escape
+				writer.write(c);
 			}
-			this.writer.write(QUOTE);// closing quote always
-			this.fresh = false;// Now the line definitely is not fresh anymore.
+			
+			delimiter();// closing quote always
+			fresh = false;// Now the line definitely is not fresh anymore.
 		}
-		// this.writer.flush();
 	}
 
 	/** Writes some objects to CSV, each object as one more field in the current
@@ -101,21 +107,34 @@ public class CSVWriter {
 	 *                Writing has failed.
 	 */
 	public void writeln(Object... fields) throws IOException {
-		this.write(fields);
-		this.endRecord();
+		write(fields);
+		endRecord();
 	}
 
 	protected void endRecord() throws IOException {
-		this.writer.write(NL);
-		this.writer.flush();
-		this.fresh = true;// fresh line
+		writer.write(terminator);
+		writer.flush();
+		fresh = true;// fresh line
 	}
 
+	public void flush()throws IOException{writer.flush();}
+	
 	/** Flushes and closes underlying writer. */
-	public void close() throws IOException {
-		writer.close();
-	}
+	public void close() throws IOException{writer.close();}
 
 	// Helpers ---------------------------------------------------------------
 
+	private String toString(Object field){
+		if(field==null)
+			return "null";
+		return field.toString();
+	}
+	
+	private void separator() throws IOException{
+		writer.write(separator);
+	}
+	
+	private void delimiter()throws IOException{
+		writer.write(delimiter);
+	}
 }
