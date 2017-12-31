@@ -1,1 +1,1 @@
-* CSVReader.readString() readBoolean() readInteger() readDouble()
+* CSVReader.readInteger() readDouble()
