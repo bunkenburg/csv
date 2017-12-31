@@ -105,7 +105,7 @@ public class CSVReader{
 
 	/** @param reader An open reader of a CSV file */
 	public CSVReader(Reader reader){
-		this.reader=new PushbackReader(reader, 2);//two character pushback buffer for CRLF
+		this.reader=new PushbackReader(reader, 10);//ten character pushback buffer for CRLF
 	}
 
 	//Accessors -------------------------------------------
@@ -167,6 +167,105 @@ public class CSVReader{
 
 		count++;
 		return record.toArray();
+	}
+	
+	// NEW FEATURES -----------------------------------
+	
+	/**
+	 * assumes string is enclosed in quotes "..."
+	 * @returns readed string otherwise null
+	 * @throws IOException
+	 */
+	public String readString() throws IOException {
+		
+		String ans = "";
+		
+		// make sure not reached file end.
+		if(eof())return null; 
+		
+		// fetch first character
+		char c = (char) reader.read();
+		
+		// make sure c is not the separator
+		if (c == this.separator) {
+			
+			// fetch next character
+			c = (char) reader.read();
+		}
+		
+		// make sure character is a quote.
+		if (c == '"') {
+			
+			// while c is not a quote fetch next character. 
+			// in loop concat string ans and character c
+			while ((c = (char) reader.read()) != '"') {
+				ans += c;
+			}
+			return ans;
+		} else {
+			reader.unread(c); // push character back.
+			return null; // no string found
+		}
+	}
+	
+	
+	/**
+	 * assumes the boolean value has the form "t", "True", "true"
+	 * , "f", "False", or "false"
+	 * @returns a boolean value otherwise null
+	 * @throws IOException
+	 */
+	public Object readBoolean() throws IOException {
+		
+		boolean ans = false;
+		String s = "";
+		
+		// make sure not reached file end.
+		if(eof())return null; 
+				
+		// fetch first character
+		char c = (char) reader.read();
+				
+		// make sure c is not the separator
+		if (c == this.separator) {
+					
+			// fetch next character
+			c = (char) reader.read();
+		}
+		
+		// parse characters
+		switch (c) {
+		case 't':
+		case 'T':
+			s += c;
+			while ((c = (char) reader.read()) != this.separator && !eof()) {
+				s += c;
+			}
+			break;
+		case 'f':
+		case 'F':
+			s += c;
+			while ((c = (char) reader.read()) != this.separator && !eof()) {
+				s += c;
+			}
+			break;
+		default:
+			reader.unread(s.toCharArray()); // push back all characters.
+			return null; // none boolean value found.
+		}
+		
+		// check whether s is "t" or "True" or "true"
+		if (s.equals("t") || s.equals("true") || s.equals("True")) {
+			ans = true;
+		} else if (s.equals("f") || s.equals("false") || s.equals("False")) {
+			ans = false;
+		} else {
+			reader.unread(s.toCharArray()); // push back all characters.
+			return null; // none boolean value found.
+		}
+		
+		return ans;
+		
 	}
 
 	//Helpers ----------------------------------------------

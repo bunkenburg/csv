@@ -17,7 +17,7 @@
  */
 package cat.inspiracio.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -242,5 +242,24 @@ public class CSVReaderTest extends CSVTest {
 		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
 	    Reader reader=new FileReader(filePath);
 	    return new CSVReader(reader);
+	}
+	
+	
+	// NEW FEATURES --------------------------------------------
+	
+	@Test public void TestReadString() throws IOException {
+		String in="\"one\",\"two\r\none\",two\r\n";
+		CSVReader reader=new CSVReader(new StringReader(in));
+		assertEquals("one",reader.readString());
+		assertEquals("two\r\none",reader.readString());
+		assertEquals(null,reader.readString());
+	}
+	
+	@Test public void TestReadBoolean() throws IOException {
+		String in="t,false,two\r\n";
+		CSVReader reader=new CSVReader(new StringReader(in));
+		assertEquals(true, reader.readBoolean());
+		assertEquals(false,reader.readBoolean());
+		assertEquals(null,reader.readBoolean());
 	}
 }
