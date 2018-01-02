@@ -16,14 +16,12 @@ limitations under the License.
 */
 package cat.inspiracio.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URL;
 
 import org.junit.Test;
 
