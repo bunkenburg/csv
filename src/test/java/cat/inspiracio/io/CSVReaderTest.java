@@ -2,19 +2,18 @@
 
     This file is part of csv.
 
-    csv is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    csv is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-    You should have received a copy of the GNU General Public License
-    along with csv.  If not, see <http://www.gnu.org/licenses/>.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package cat.inspiracio.io;
 
 import static org.junit.Assert.assertEquals;
@@ -25,6 +24,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -239,8 +239,11 @@ public class CSVReaderTest extends CSVTest {
 	}
 	
 	private CSVReader getTestFile() throws FileNotFoundException{
-		String filePath=getDirectoryPath(this.getClass()) + File.separator + "test.csv";
-	    Reader reader=new FileReader(filePath);
+		ClassLoader loader = getClass().getClassLoader();
+		URL u=loader.getResource("test.csv");
+		String s=u.getFile();
+		File file = new File(s);
+	    Reader reader=new FileReader(file);
 	    return new CSVReader(reader);
 	}
 }
